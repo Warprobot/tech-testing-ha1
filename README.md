@@ -1,7 +1,7 @@
 # Домашнее задание №1
 
 ## Статус репозитория
-[![Coverage Status](https://coveralls.io/repos/Warprobot/tech-testing-ha1/badge.png)](https://coveralls.io/r/Warprobot/tech-testing-ha1)
+[![Coverage Status](https://coveralls.io/repos/Warprobot/tech-testing-ha1/badge.png?branch=master)](https://coveralls.io/r/Warprobot/tech-testing-ha1?branch=master)
 [![Build Status](https://travis-ci.org/Warprobot/tech-testing-ha1.svg?branch=master)](https://travis-ci.org/Warprobot/tech-testing-ha1)
 
 ## Окружение для разработки

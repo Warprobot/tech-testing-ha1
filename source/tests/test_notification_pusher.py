@@ -4,6 +4,7 @@ from notification_pusher import create_pidfile
 
 
 class NotificationPusherTestCase(unittest.TestCase):
+
     def test_create_pidfile_example(self):
         pid = 42
         m_open = mock.mock_open()
