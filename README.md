@@ -1,5 +1,9 @@
 # Домашнее задание №1
 
+## Статус репозитория
+[![Coverage Status](https://coveralls.io/repos/Warprobot/tech-testing-ha1/badge.png)](https://coveralls.io/r/Warprobot/tech-testing-ha1)
+[![Build Status](https://travis-ci.org/Warprobot/tech-testing-ha1.svg?branch=master)](https://travis-ci.org/Warprobot/tech-testing-ha1)
+
 ## Окружение для разработки
 
 В целях унификации окружения для разработки под различными OS предлагается использовать [Vagrant](http://www.vagrantup.com/).
