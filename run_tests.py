@@ -32,6 +32,7 @@ if __name__ == '__main__':
     suite = unittest.TestSuite((
         unittest.makeSuite(NotificationPusherTestCase),
         unittest.makeSuite(RedirectCheckerTestCase),
+        unittest.makeSuite(UtilsTestCase),
     ))
     with mocked_connection():
         result = unittest.TextTestRunner().run(suite)
