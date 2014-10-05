@@ -157,7 +157,32 @@ class NotificationPusherTestCase(unittest.TestCase):
         notification_pusher.stop_handler(signum)
         self.assertEqual(False, notification_pusher.run_application)
 
+    def test_done_with_processed_tasks_success(self):
+        task_queue = MagicMock()
+        task_queue.qsize = MagicMock(return_value=1)
+        task = MagicMock()
 
+        task_queue.get_nowait = MagicMock(return_value=(task, 'task_method'))
+        notification_pusher.done_with_processed_tasks(task_queue)
+        self.assertTrue(task.task_method.called)
+
+    def test_done_with_processed_tasks_except(self):
+        from gevent import queue
+        task_queue = MagicMock()
+        task_queue.qsize = MagicMock(return_value=1)
+        task_queue.get_nowait = Mock(side_effect=[queue.Empty()])
+        notification_pusher.done_with_processed_tasks(task_queue)
+        self.assertRaises(Exception, "queue is empty")
+
+
+    def test_done_with_processed_tasks_attr_success(self):
+        task_queue = MagicMock()
+        task_queue.qsize = Mock(return_value=1)
+        task = Mock()
+        task_queue.get_nowait = Mock(return_value=(task, 'task_method'))
+        with patch('logging.debug', Mock()):
+            notification_pusher.done_with_processed_tasks(task_queue)
+        self.assertTrue(task.task_method.called)
 
 
 
