@@ -19,8 +19,8 @@ def daemonize():
         raise Exception("%s [%d]" % (exc.strerror, exc.errno))
 
     if pid == 0:
-        os.setsid() #call setsid создает сеанс и устанавливает идентификатор
-                    #Возвращает идентификатор сеанса вызывающего процесса.
+        os.setsid()
+
         try:
             pid = os.fork()
         except OSError as exc:
@@ -40,7 +40,7 @@ def create_pidfile(pidfile_path):
 
 def exec_pyfile(filepath):
     variables = {}
-    execfile(filepath, variables) #исполняет последовательно команды из файла на диске
+    execfile(filepath, variables)
     return variables
 
 def load_config_from_pyfile(filepath):
@@ -57,7 +57,7 @@ def load_config_from_pyfile(filepath):
     cfg = Config()
     variables = exec_pyfile(filepath)
     for key, value in variables.iteritems():
-        if key.isupper(): #Возвращает 1, если все символы в исходной строке находятся в верхнем регистре (прописные), иначе 0
+        if key.isupper():
             setattr(cfg, key, value)
 
     return cfg
