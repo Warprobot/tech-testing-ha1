@@ -11,6 +11,7 @@ from tarantool_queue import tarantool_queue
 def daemonize():
     """
     Демонизирует текущий процесс.
+    :rtype : object
     """
     try:
         pid = os.fork()
@@ -18,8 +19,8 @@ def daemonize():
         raise Exception("%s [%d]" % (exc.strerror, exc.errno))
 
     if pid == 0:
-        os.setsid()
-
+        os.setsid() #call setsid создает сеанс и устанавливает идентификатор
+                    #Возвращает идентификатор сеанса вызывающего процесса.
         try:
             pid = os.fork()
         except OSError as exc:
@@ -33,9 +34,14 @@ def daemonize():
 
 def create_pidfile(pidfile_path):
     pid = str(os.getpid())
-    with open(pidfile_path, 'w') as f:
+    with open(pidfile_path, 'w') as f: #with instead try ... finally
         f.write(pid)
 
+
+def exec_pyfile(filepath):
+    variables = {}
+    execfile(filepath, variables) #исполняет последовательно команды из файла на диске
+    return variables
 
 def load_config_from_pyfile(filepath):
     """
@@ -49,13 +55,9 @@ def load_config_from_pyfile(filepath):
     :rtype: Config
     """
     cfg = Config()
-
-    variables = {}
-
-    execfile(filepath, variables)
-
+    variables = exec_pyfile(filepath)
     for key, value in variables.iteritems():
-        if key.isupper():
+        if key.isupper(): #Возвращает 1, если все символы в исходной строке находятся в верхнем регистре (прописные), иначе 0
             setattr(cfg, key, value)
 
     return cfg
