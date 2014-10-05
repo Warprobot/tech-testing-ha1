@@ -326,5 +326,3 @@ class InitTestCase(unittest.TestCase):
                 mock.patch('source.lib.logger', mock.MagicMock()) as logger:
             prepare_url('url')
             assert logger.error.called
-
-
