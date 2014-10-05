@@ -5,6 +5,7 @@ import os
 import socket
 import sys
 import unittest
+from source.tests.test_lib_init import InitTestCase
 
 source_dir = os.path.join(os.path.dirname(__file__), 'source')
 sys.path.insert(0, source_dir)
@@ -32,6 +33,7 @@ if __name__ == '__main__':
     suite = unittest.TestSuite((
         unittest.makeSuite(NotificationPusherTestCase),
         unittest.makeSuite(RedirectCheckerTestCase),
+        unittest.makeSuite(InitTestCase),
     ))
     with mocked_connection():
         result = unittest.TextTestRunner().run(suite)
