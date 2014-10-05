@@ -247,6 +247,12 @@ class Config(object):
     pass
 
 
+
+def exec_pyfile(filepath):
+    variables = {}
+    execfile(filepath, variables) #исполняет последовательно команды из файла на диске
+    return variables
+
 def load_config_from_pyfile(filepath):
     """
     Создает Config объект из py файла и загружает в него настройки.
@@ -259,11 +265,7 @@ def load_config_from_pyfile(filepath):
     :rtype: Config
     """
     cfg = Config()
-
-    variables = {}
-
-    execfile(filepath, variables)
-
+    variables = exec_pyfile(filepath)
     for key, value in variables.iteritems():
         if key.isupper():
             setattr(cfg, key, value)
