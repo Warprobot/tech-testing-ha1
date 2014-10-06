@@ -22,8 +22,6 @@ class NotificationPusherTestCase(unittest.TestCase):
         config.WORKER_POOL_SIZE = 10
         return config
 
-
-
     def test_create_pidfile_example(self):
         pid = 42
         m_open = mock.mock_open()
@@ -133,7 +131,7 @@ class NotificationPusherTestCase(unittest.TestCase):
 
 
     def test_load_configfile_fail(self):
-        import  os
+        import os
         variables = {
             'QUEUE_PORT': '',
             'Wrong_attribute': '0'
@@ -143,7 +141,7 @@ class NotificationPusherTestCase(unittest.TestCase):
         with self.assertRaises(AttributeError):
             getattr(returns, 'Wrong_attribute')
 
-
+    @patch('source.notification_pusher.logger.info', Mock())
     def test_notification_worker_success(self):
         task = Mock()
         task_queue = MagicMock()
@@ -158,7 +156,8 @@ class NotificationPusherTestCase(unittest.TestCase):
             notification_pusher.notification_worker(task,task_queue)
         task_queue.put.assert_called_once_with((task, task_ack))
 
-
+    @patch('source.notification_pusher.logger.exception', Mock())
+    @patch('source.notification_pusher.logger.info', Mock())
     def test_notification_worker_fail(self):
         from requests import RequestException
         task_queue = MagicMock()
@@ -174,14 +173,14 @@ class NotificationPusherTestCase(unittest.TestCase):
              notification_pusher.notification_worker(task, task_queue)
         task_queue.put.assert_called_once_with((task, bury))
 
-
+    @patch("source.notification_pusher.logger.info", Mock())
     def test_stop_handler_exit_code_ok(self):
         signum = 123
         exit_code = notification_pusher.SIGNAL_EXIT_CODE_OFFSET + signum
         notification_pusher.stop_handler(signum)
         self.assertEqual(exit_code, notification_pusher.exit_code)
 
-
+    @patch("source.notification_pusher.logger.info", Mock())
     def test_stop_handler_ok(self):
         signum = 123
         notification_pusher.stop_handler(signum)
@@ -216,7 +215,7 @@ class NotificationPusherTestCase(unittest.TestCase):
             notification_pusher.done_with_processed_tasks(task_queue)
         self.assertTrue(task.task_method.called)
 
-
+    @patch('source.notification_pusher.logger.info', Mock())
     def test_mainloop_config_fail(self):
         from tarantool_queue import Queue
         config = self.make_config()
@@ -230,7 +229,7 @@ class NotificationPusherTestCase(unittest.TestCase):
         with patch('gevent.signal', Mock()):
             notification_pusher.install_signal_handlers()
 
-
+    @patch('source.notification_pusher.logger.info', Mock())
     @patch('source.notification_pusher.patch_all', Mock())
     def test_main_without_args(self):
         stop_app()
@@ -240,22 +239,10 @@ class NotificationPusherTestCase(unittest.TestCase):
             with patch('source.notification_pusher.create_pidfile', Mock()) as create_pidfile:
                 with patch('source.notification_pusher.load_config_from_pyfile', Mock(return_value=config)):
                     notification_pusher.main(args)
-            self.assertFalse(create_pidfile.called)
-        self.assertFalse(daemon.called)
+                    self.assertFalse(create_pidfile.called)
+                    self.assertFalse(daemon.called)
 
-
-    @patch('source.notification_pusher.create_pidfile', Mock())
-    @patch('source.notification_pusher.patch_all', Mock())
-    def test_main_with_daemon_arg(self):
-        stop_app()
-        config = self.make_config()
-        args = ['','-d', '-c', './source/tests/test_config']
-        with patch('source.notification_pusher.daemonize', Mock()) as daemon :
-            with patch('source.notification_pusher.load_config_from_pyfile', Mock(return_value=config)):
-                notification_pusher.main(args)
-        daemon.assert_called_once()
-
-
+    @patch('source.notification_pusher.logger.info', Mock())
     @patch('source.notification_pusher.patch_all', Mock())
     def test_main_mainloop_success(self):
         config = self.make_config()
@@ -264,15 +251,3 @@ class NotificationPusherTestCase(unittest.TestCase):
             with patch('source.notification_pusher.main_loop', Mock(side_effect=stop_app())):
                 notification_pusher.main(args)
                 notification_pusher.main_loop(config)
-
-
-    @patch('source.notification_pusher.patch_all', Mock())
-    @patch('source.notification_pusher.create_pidfile', Mock())
-    def test_main_mainloop_fail(self):
-        config = self.make_config()
-        args = ['', '-c', './source/tests/test_config']
-        with patch('source.notification_pusher.load_config_from_pyfile', Mock(return_value=config)):
-            with patch('source.notification_pusher.main_loop', Mock(side_effect=Exception("Exception"))):
-                with patch('notification_pusher.sleep', Mock()) as sleep:
-                    notification_pusher.main(args)
-                    assert sleep.called
