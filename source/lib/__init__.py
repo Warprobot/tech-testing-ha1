@@ -28,6 +28,8 @@ COUNTER_TYPES = (
     ('LI_RU', re.compile(r'.*/counter\.yadro\.ru/hit.*', re.I+re.S)),
     ('RAMBLER_TOP100', re.compile(r'.*counter\.rambler\.ru/top100.*', re.I+re.S))
 )
+GOOGLE_MARKET_PREFIX = "market://"
+GOOGLE_PLAY_PREFIX = "http://play.google.com/store/apps/"
 
 
 def to_unicode(val, errors='strict'):
@@ -40,7 +42,7 @@ def to_str(val, errors='strict'):
 
 def get_counters(content):
     """
-    Ищет в хтмл-странице счетичик и возвращает массив типов найденных
+    Ищет в хтмл-странице счетчик и возвращает массив типов найденных
     """
     counters = []
     for counter_name, regexp in COUNTER_TYPES:
@@ -71,7 +73,7 @@ def check_for_meta(content, url):
 
 def fix_market_url(url):
     """Преобразует market:// урлы в http://"""
-    return 'http://play.google.com/store/apps/' + url.lstrip("market://")
+    return GOOGLE_PLAY_PREFIX + url.lstrip(GOOGLE_MARKET_PREFIX)
 
 
 def make_pycurl_request(url, timeout, useragent=None):
@@ -191,6 +193,7 @@ def prepare_url(url):
     try:
         netloc = netloc.encode('idna')
     except UnicodeError:
+        logger.error("UnicodeError raise")
         pass
     path = quote(to_str(path, 'ignore'), safe='/%+$!*\'(),')
     qs = quote_plus(to_str(qs, 'ignore'), safe=':&%=+$!*\'(),')
