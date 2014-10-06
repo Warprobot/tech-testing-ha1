@@ -246,7 +246,8 @@ class NotificationPusherTestCase(unittest.TestCase):
 
     @patch('source.notification_pusher.create_pidfile', Mock())
     @patch('source.notification_pusher.patch_all', Mock())
-    def test_main_with_daemon_arg(self):
+    @patch('source.notification_pusher.main_loop', Mock(side_effect=stop_app()))
+    def test_main_with_daemon(self):
         stop_app()
         config = self.make_config()
         args = ['','-d', '-c', './source/tests/test_config']
@@ -265,7 +266,7 @@ class NotificationPusherTestCase(unittest.TestCase):
                 notification_pusher.main(args)
                 notification_pusher.main_loop(config)
 
-
+    """
     @patch('source.notification_pusher.patch_all', Mock())
     @patch('source.notification_pusher.create_pidfile', Mock())
     def test_main_mainloop_fail(self):
@@ -276,3 +277,4 @@ class NotificationPusherTestCase(unittest.TestCase):
                 with patch('notification_pusher.sleep', Mock()) as sleep:
                     notification_pusher.main(args)
                     assert sleep.called
+    """
