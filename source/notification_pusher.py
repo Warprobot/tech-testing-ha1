@@ -92,6 +92,7 @@ def done_with_processed_tasks(task_queue):
             break
 
 
+
 def stop_handler(signum):
     """
     Обработчик сигналов завершения приложения.
@@ -250,7 +251,7 @@ class Config(object):
 
 def exec_pyfile(filepath):
     variables = {}
-    execfile(filepath, variables) #исполняет последовательно команды из файла на диске
+    execfile(filepath, variables)
     return variables
 
 def load_config_from_pyfile(filepath):
@@ -332,6 +333,10 @@ def main(argv):
         logger.info('Stop application loop in main.')
 
     return exit_code
+
+
+
+
 
 
 if __name__ == '__main__':
